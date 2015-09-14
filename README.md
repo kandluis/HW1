@@ -2,7 +2,7 @@
 # CS 182: Artificial Intelligence
 # Assignment 1: Search Algorithms
 * Fall 2015
-* Due: September 18, 5pm
+* Due: **updated** September 21, 11:59pm
 
 In this assignment, you will implement search algorithms to help Pacman find paths in a maze. 
 Note: We will use the Pacman framework developed at Berkeley. This framework is used worldwide to teach AI, therefore it is very important that you DO NOT publish your solutions online.
