@@ -32,6 +32,16 @@ To get the assignment we recommend just cloning this repo:
  Solutions should be submitted to the course dropbox folder. Submit only the files `search.py` and `searchAgents.py`. If you work in a pair, only one student should submit the files, but make sure to include the names of both students at the top of each of the files.
 
 
+### Important Note:
+
+There is an optimization to graph search that we did not cover in class that will help with the homework.
+
+For BFS and DFS you can avoid pushing paths that are already on the frontier. This is valid because for these algorithms, paths of the same depth and last state are equivalent. You can however _not_ do this for UCS or A\* since these algorithms are aware of the path cost, and so it is possible that, from the algorithms perspective, the new path is superior to a path with the same last state that was previously added to the frontier. 
+
+In practice, you can implement this by special casing BFS and DFS to add a state to the explored list _when_ it is  pushed on the frontier (as opposed to when it is popped). This will make BFS (in particular the medium corners problem on the HW) much faster. However if you implement it as in the notes we will not take off points.
+
+Furthermore, in AIMA they also note that for BFS you can accept a solution path on pushing as opposed to on exploring (popping). Implementing this will give you a small speed up on this problem, but potentially a larger speed-up on problems with a large branching factor. In our implementation, BFS requires 1966 expansions after the first change, 1921 after the second, and several minutes without either change. 
+
 ## Written Assignment 
 
 Answer the following questions individually, and submit as pdf to the dropbox folder. 
