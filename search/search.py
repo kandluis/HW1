@@ -72,6 +72,43 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s,s,w,s,w,w,s,w]
 
+def constructPath(actions, state):
+    """
+    Returns the sequence of actions leaded to the state.
+    """
+    moves = []
+    while True:
+        try:
+            action, prev_state = actions[state]
+            moves.append(action)
+            state = prev_state
+        except KeyError:
+            break
+    moves.reverse()
+    return moves
+
+def genericSearch(problem, frontier):
+    """
+    Generic search algorithm which utilizes the given frontier to determine
+    which states to explore next.
+    """
+    frontier.push(problem.getStartState())
+    explored = set()
+    # Dictionary of state => (action, prev_state) where action is the required
+    # action to move from prev_state to state.
+    prev_action = {}
+    while not frontier.isEmpty():
+        state = frontier.pop()
+        if problem.isGoalState(state):
+            return constructPath(prev_action, state)
+        explored.add(state)
+        for (successor, action, stepCost) in problem.getSuccessors(state):
+            if successor not in explored:
+                explored.add(successor)
+                frontier.push(successor)
+                prev_action[successor] = (action, state)
+    return [] # happens if no way to reach and GoalState.
+
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first
@@ -89,7 +126,7 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return genericSearch(problem, util.Stack())
 
 def breadthFirstSearch(problem):
     """
@@ -97,7 +134,7 @@ def breadthFirstSearch(problem):
     [2nd Edition: p 73, 3rd Edition: p 82]
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return genericSearch(problem, util.Queue())
 
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
