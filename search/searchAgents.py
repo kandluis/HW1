@@ -1,4 +1,9 @@
 # searchAgents.py
+
+# Authors:
+# @Kevin Eskici (keskici@college.harvard.edu)
+# @Luis A. Perez (luisperez@college.harvard.edu)
+
 # ---------------
 # Licensing Information: Please do not distribute or publish solutions to this
 # project. You are free to use and extend these projects for educational
