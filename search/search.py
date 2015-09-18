@@ -72,25 +72,60 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s,s,w,s,w,w,s,w]
 
+def reconstructPath(actionSet, toState):
+    """
+    Reconstructs the path. Assumes that actionSet maps toState => (action, prevState)
+    tuples.
+    """
+    try:
+        action, prevState = actionSet[toState]
+        return reconstructPath(actionSet, prevState) + [action]
+    except KeyError:
+        return []
+
 def genericSearch(problem, frontier):
     """
     Generic search algorithm which utilizes the given frontier to determine
     which states to explore next.
+
+    We let the frontier determine which states we should explore next.
+    We mark a state as explored only after full expansion, which guarantees
+    we have found the best path (according to the frontier) to that state.
+
+    The frontier allows for adding multiple states with different paths, and must
+    decide which is better and pop that off first. Future paths that lead to the
+    same state are ignored because we mark that state as fully explored.
+
+    The intention is for this to work with BFS (unique queue), DFS (using stack),
+    and A*/UCS (using priorityQueue). No other algos were tested.
+
+    The function also avoid keeping track of paths entirely, instead only keeping
+    track of path cost and a list of prev pointers.
     """
-    # Frontier stores (cost, state) tuples.
-    frontier.push(([], problem.getStartState()))
-    # Maps explored states to their lowest cost.
+    # Frontier stores (cost, state, (action, fromState)) tuples.
+    frontier.push((0, problem.getStartState(), (None, None)))
+    # Set containing fully expanded states (ie, already explored).
     explored = set()
+    # Maps state => (action, fromState) tuples so we can reconstruct a path.
+    prev = {}
     while not frontier.isEmpty():
-        (path, state) = frontier.pop()
+        (cost, state, (action, fromState)) = frontier.pop()
+        # If we've already processed this state using some other path, skip.
+        if state in explored:
+            continue
+        # We've found a new optimal path.
+        prev[state] = (action, fromState)
+        # We've reached our goal, so stop searching.
         if problem.isGoalState(state):
-            return path
+            break
+        # Expand state, add to queue.
+        for (successor, action, stepCost) in problem.getSuccessors(state):
+            frontier.push((cost + stepCost, successor, (action, state)))
+        # Mark state as fully explored.
         explored.add(state)
-        for (successor, action, _) in problem.getSuccessors(state):
-            if successor not in explored:
-                explored.add(successor)
-                frontier.push((path + [action], successor))
-    return [] # happens if no way to reach and GoalState.
+
+    # Don't want to return initial "None" action.
+    return reconstructPath(prev, state)[1:]
 
 def depthFirstSearch(problem):
     """
@@ -122,8 +157,7 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
-    return genericSearch(problem, util.PriorityQueueWithFunction(
-        lambda (path, _): problem.getCostOfActions(path)))
+    return genericSearch(problem, util.PriorityQueueWithFunction(lambda (cost, state, _): cost))
 
 def nullHeuristic(state, problem=None):
     """
@@ -136,7 +170,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "Search the node that has the lowest combined cost and heuristic first."
     "*** YOUR CODE HERE ***"
     return genericSearch(problem, util.PriorityQueueWithFunction(
-        lambda (path, state): problem.getCostOfActions(path) + heuristic(state, problem)))
+        lambda (cost, state, _): cost + heuristic(state, problem)))
 
 # Abbreviations
 bfs = breadthFirstSearch
