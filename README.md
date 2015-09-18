@@ -4,7 +4,7 @@
 * Fall 2015
 * Due: **updated** September 21, 11:59pm
 
-In this assignment, you will implement search algorithms to help Pacman find paths in a maze. 
+In this assignment, you will implement search algorithms to help Pacman find paths in a maze.
 Note: We will use the Pacman framework developed at Berkeley. This framework is used worldwide to teach AI, therefore it is very important that you DO NOT publish your solutions online.
 
 
@@ -36,15 +36,15 @@ To get the assignment we recommend just cloning this repo:
 
 There is an optimization to graph search that we did not cover in class that will help with the homework.
 
-For BFS and DFS you can avoid pushing paths that are already on the frontier. This is valid because for these algorithms, paths of the same depth and last state are equivalent. You can however _not_ do this for UCS or A\* since these algorithms are aware of the path cost, and so it is possible that, from the algorithms perspective, the new path is superior to a path with the same last state that was previously added to the frontier. 
+For BFS and DFS you can avoid pushing paths that are already on the frontier. This is valid because for these algorithms, paths of the same depth and last state are equivalent. You can however _not_ do this for UCS or A\* since these algorithms are aware of the path cost, and so it is possible that, from the algorithms perspective, the new path is superior to a path with the same last state that was previously added to the frontier.
 
 In practice, you can implement this by special casing BFS and DFS to add a state to the explored list _when_ it is  pushed on the frontier (as opposed to when it is popped). This will make BFS (in particular the medium corners problem on the HW) much faster. However if you implement it as in the notes we will not take off points.
 
-Furthermore, in AIMA they also note that for BFS you can accept a solution path on pushing as opposed to on exploring (popping). Implementing this will give you a small speed up on this problem, but potentially a larger speed-up on problems with a large branching factor. In our implementation, BFS requires 1966 expansions after the first change, 1921 after the second, and several minutes without either change. 
+Furthermore, in AIMA they also note that for BFS you can accept a solution path on pushing as opposed to on exploring (popping). Implementing this will give you a small speed up on this problem, but potentially a larger speed-up on problems with a large branching factor. In our implementation, BFS requires 1966 expansions after the first change, 1921 after the second, and several minutes without either change.
 
-## Written Assignment 
+## Written Assignment
 
-Answer the following questions individually, and submit as pdf to the dropbox folder. 
+Answer the following questions individually, and submit as pdf to the dropbox folder.
 
 ### Question 1
 
@@ -58,10 +58,10 @@ The Pac-Man board will show an overlay of the states explored and the order in w
 
 ### Question 3
 
-Describe a real world problem for which you would want to find an optimal solution. Briefly explain why (3-4 sentences). 
+Describe a real world problem for which you would want to find an optimal solution. Briefly explain why (3-4 sentences).
 
 
 ### Question 4
 
-Describe a real-world problem for which you would prefer finding a solution quickly, even if it is suboptimal. Briefly explain why (3-4 sentences). 
+Describe a real-world problem for which you would prefer finding a solution quickly, even if it is suboptimal. Briefly explain why (3-4 sentences).
 

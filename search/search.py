@@ -92,20 +92,22 @@ def genericSearch(problem, frontier):
     Generic search algorithm which utilizes the given frontier to determine
     which states to explore next.
     """
-    frontier.push(problem.getStartState())
-    explored = set()
+    # Frontier stores (cost, state) tuples.
+    frontier.push((0,problem.getStartState()))
+    # Maps explored states to their lowest cost.
+    explored = {}
     # Dictionary of state => (action, prev_state) where action is the required
     # action to move from prev_state to state.
     prev_action = {}
     while not frontier.isEmpty():
-        state = frontier.pop()
+        (cost, state) = frontier.pop()
         if problem.isGoalState(state):
             return constructPath(prev_action, state)
-        explored.add(state)
+        explored[state] = cost
         for (successor, action, stepCost) in problem.getSuccessors(state):
-            if successor not in explored:
-                explored.add(successor)
-                frontier.push(successor)
+            if successor not in explored or explored[successor] > cost + stepCost:
+                explored[successor] = cost + stepCost
+                frontier.push((cost + stepCost, successor))
                 prev_action[successor] = (action, state)
     return [] # happens if no way to reach and GoalState.
 
@@ -139,7 +141,7 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    genericSearch(problem, util.PriorityQueueWithFunction(lambda (cost, _): cost))
 
 def nullHeuristic(state, problem=None):
     """
