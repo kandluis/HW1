@@ -141,7 +141,7 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
-    genericSearch(problem, util.PriorityQueueWithFunction(lambda (cost, _): cost))
+    return genericSearch(problem, util.PriorityQueueWithFunction(lambda (cost, _): cost))
 
 def nullHeuristic(state, problem=None):
     """
