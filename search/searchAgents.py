@@ -282,9 +282,6 @@ class CornersProblem(search.SearchProblem):
                 print 'Warning: no food in corner ' + str(corner)
         self._expanded = 0 # Number of search nodes expanded
 
-
-
-
     def getStartState(self):
         "Returns the start state (in your state space, not the full Pacman state space)"
 
@@ -309,9 +306,6 @@ class CornersProblem(search.SearchProblem):
          cost of expanding to that successor
         """
         currentPosition, visitedCorners = state
-        if currentPosition in self.corners:
-            visitedCorners = list(visitedCorners)
-            visitedCorners[self.corners.index(currentPosition)] = True
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
@@ -322,7 +316,11 @@ class CornersProblem(search.SearchProblem):
             hitsWall = self.walls[nextx][nexty]
             pos = (nextx, nexty)
             if not hitsWall:
-                successors.append(((pos, tuple(visitedCorners)), action, 1))
+                newVisitedCorners = visitedCorners
+                if pos in self.corners:
+                    newVisitedCorners = list(visitedCorners)
+                    newVisitedCorners[self.corners.index(pos)] = True
+                successors.append(((pos, tuple(newVisitedCorners)), action, 1))
         self._expanded += 1
         return successors
 
