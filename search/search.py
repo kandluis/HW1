@@ -93,7 +93,7 @@ def genericSearch(problem, frontier):
     which states to explore next.
     """
     # Frontier stores (cost, state) tuples.
-    frontier.push((0,problem.getStartState()))
+    frontier.push((0, problem.getStartState()))
     # Maps explored states to their lowest cost.
     explored = {}
     # Dictionary of state => (action, prev_state) where action is the required
@@ -105,7 +105,7 @@ def genericSearch(problem, frontier):
             return constructPath(prev_action, state)
         explored[state] = cost
         for (successor, action, stepCost) in problem.getSuccessors(state):
-            if successor not in explored or explored[successor] > cost + stepCost:
+            if successor not in explored:
                 explored[successor] = cost + stepCost
                 frontier.push((cost + stepCost, successor))
                 prev_action[successor] = (action, state)
