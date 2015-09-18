@@ -88,40 +88,38 @@ def genericSearch(problem, frontier):
     Generic search algorithm which utilizes the given frontier to determine
     which states to explore next.
 
-    We let the frontier determine which states we should explore next.
     We mark a state as explored only after full expansion, which guarantees
     we have found the best path (according to the frontier) to that state.
 
-    The frontier allows for adding multiple states with different paths, and must
-    decide which is better and pop that off first. Future paths that lead to the
-    same state are ignored because we mark that state as fully explored.
+    The frontier can either update the best path to a state or duplicate pahts,
+    but it must decide which is better and pop that off first.
+    Future paths that lead to the same state (in the case the frontier duplicates)
+    are ignored because we mark that state as fully explored and skip it in
+    our algorithm.
 
-    The intention is for this to work with BFS (unique queue), DFS (using stack),
-    and A*/UCS (using priorityQueue). No other algos were tested.
+    The code is intended to work with BFS (using queue), DFS (using stack),
+    and A*/UCS (using priorityQueue). No other algos were tested, but it should
+    work in general with however the frontier defines "best" path as long as
+    the guarantee exists that a path to a state cannot be improved by revisiting
+    that state (ie, no negative edge weights).
 
-    The function also avoid keeping track of paths entirely, instead only keeping
-    track of path cost and a list of prev pointers.
+    We also optimize the function to avoid keeping track of paths entirely,
+    instead only keeping track of path cost and a list of prev pointers.
     """
     # Frontier stores (cost, state, (action, fromState)) tuples.
     frontier.push((0, problem.getStartState(), (None, None)))
-    # Set containing fully expanded states (ie, already explored).
     explored = set()
     # Maps state => (action, fromState) tuples so we can reconstruct a path.
     prev = {}
     while not frontier.isEmpty():
         (cost, state, (action, fromState)) = frontier.pop()
-        # If we've already processed this state using some other path, skip.
         if state in explored:
             continue
-        # We've found a new optimal path.
         prev[state] = (action, fromState)
-        # We've reached our goal, so stop searching.
         if problem.isGoalState(state):
             break
-        # Expand state, add to queue.
         for (successor, action, stepCost) in problem.getSuccessors(state):
             frontier.push((cost + stepCost, successor, (action, state)))
-        # Mark state as fully explored.
         explored.add(state)
 
     # Don't want to return initial "None" action.
