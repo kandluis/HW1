@@ -72,43 +72,24 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s,s,w,s,w,w,s,w]
 
-def constructPath(actions, state):
-    """
-    Returns the sequence of actions leaded to the state.
-    """
-    moves = []
-    while True:
-        try:
-            action, prev_state = actions[state]
-            moves.append(action)
-            state = prev_state
-        except KeyError:
-            break
-    moves.reverse()
-    return moves
-
 def genericSearch(problem, frontier):
     """
     Generic search algorithm which utilizes the given frontier to determine
     which states to explore next.
     """
     # Frontier stores (cost, state) tuples.
-    frontier.push((0, problem.getStartState()))
+    frontier.push(([], problem.getStartState()))
     # Maps explored states to their lowest cost.
-    explored = {}
-    # Dictionary of state => (action, prev_state) where action is the required
-    # action to move from prev_state to state.
-    prev_action = {}
+    explored = set()
     while not frontier.isEmpty():
-        (cost, state) = frontier.pop()
+        (path, state) = frontier.pop()
         if problem.isGoalState(state):
-            return constructPath(prev_action, state)
-        explored[state] = cost
-        for (successor, action, stepCost) in problem.getSuccessors(state):
+            return path
+        explored.add(state)
+        for (successor, action, _) in problem.getSuccessors(state):
             if successor not in explored:
-                explored[successor] = cost + stepCost
-                frontier.push((cost + stepCost, successor))
-                prev_action[successor] = (action, state)
+                explored.add(successor)
+                frontier.push((path + [action], successor))
     return [] # happens if no way to reach and GoalState.
 
 def depthFirstSearch(problem):
@@ -141,7 +122,8 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
-    return genericSearch(problem, util.PriorityQueueWithFunction(lambda (cost, _): cost))
+    return genericSearch(problem, util.PriorityQueueWithFunction(
+        lambda (path, _): problem.getCostOfActions(path)))
 
 def nullHeuristic(state, problem=None):
     """
@@ -153,8 +135,8 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     "Search the node that has the lowest combined cost and heuristic first."
     "*** YOUR CODE HERE ***"
-    return genericSearch(problem, util.PriorityQueueWithFunction(lambda ( cost, state): cost + heuristic(state, problem)))
-
+    return genericSearch(problem, util.PriorityQueueWithFunction(
+        lambda (path, state): problem.getCostOfActions(path) + heuristic(state, problem)))
 
 # Abbreviations
 bfs = breadthFirstSearch
