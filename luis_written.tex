@@ -1,0 +1,66 @@
+\documentclass[11pt]{article}
+\usepackage{latexsym}
+\usepackage{fancyhdr}
+\usepackage{amssymb,amsmath,amsthm}
+\usepackage[pdftex]{graphicx}
+\usepackage[margin=1in]{geometry}
+
+
+% Create answer counter to keep track of seperate responses
+\newcounter{AnswerCounter}
+\newcounter{SubAnswerCounter}
+\setcounter{AnswerCounter}{1}
+\setcounter{SubAnswerCounter}{1}
+
+% Create answer environment which uses counter
+\newenvironment{answer}[0]{
+  \setcounter{SubAnswerCounter}{1}
+  \bigskip
+  \textbf{Solution \arabic{AnswerCounter}}
+  \\
+  \begin{small}
+}{
+  \end{small}
+  \stepcounter{AnswerCounter}
+}
+
+\newenvironment{subanswer}[0]{
+  (\alph{SubAnswerCounter})
+}{
+ \bigskip
+  \stepcounter{SubAnswerCounter}
+}
+
+% Custom Header information on each page
+\pagestyle{fancy}
+\lhead{HUID: 70871564}
+\rhead{CS182: Luis APerez}
+\renewcommand{\headrulewidth}{0.1pt}
+\renewcommand{\footrulewidth}{0.1pt}
+
+% Title page is page 0
+\setcounter{page}{0}
+
+\begin{document}
+\begin{answer}
+Given that this is a DFS search, the exploration order is as expected. It has a single dark red path that goes as far as possible (until a dead end or the goal) an then branches from there, exploring ``deep'' states first. There are many paths/states that are left unexplored sometimes, since the algorithm ends as soon as a path to the food item has been found.
+
+From the above, it's clear that Pac-Man does not go to all the explored squares. There are times when a path is explored but it proves a dead-end (or is a part of a path to the goal that could be ignored), and therefore Pac-Man does not take that path on his way to the food.
+\end{answer}
+
+\begin{answer}
+In the openMaze, $A^*$ finds reaches the food item using a path of length $54$ by expanding a total of $535$ nodes. On the other hand, UCS also finds a path of length $54$ (in this case, it happens to be the same path, but in general, this need not be the case, just as long as both paths are the optimal length), but it must expand $682$ total nodes, a $\sim 27\%$.
+
+For further study, I also ran openMaze with BFS and DFS. Interestingly enough, using BFS gave a different optimal path, but expanded the same number of nodes as UCS. This makes sense, however, if we consider that UCS is using the unit function for step costs, and is therefore essentially just BFS. The reason for the different path is likely just due to the tie-breaking that occurs inside a Queue in BGS as compared to a PriorityQueue in UCS. As for DFS, it finds an extremely subobtimal path (essentially takes Pac-Man over the entire board) of length $298$. Interestingly, however, it only expands $576$ nodes, which is less than BFS/UCS (and still more than $A^*$).
+
+In conclusion, $A^*$ is clearly the best in this situation, finding the optimal solution with the least number of expansions.
+\end{answer}
+
+\begin{answer}
+Consider the case of a chip design company that is attempting to find the optimal layout for a particular board. We can define a soldiering configuration as a state, with goal states being all states  that produce a valid an output withing a safe range (suppose we're creating radio chips which need to listen to a particular frequency). Given that whatever design is used will likely be replicated millions (maybe billions of times), spending effort in finding the optimal solution makes sense (maybe we define the cost as the amount of material needed for a particular configuration). In this way, the company can save millions of dollars over the life cycle of the chip.
+\end{answer}
+
+\begin{answer}
+On the other hand, consider the very real world scenario of a fire-fighter searching for survivors in a burning apartment complex. The destruction caused by the fire has made the apartment into essentially a maze, and while there is likely some optimal way to search and reach all the survivors, given the time-constraints, it's better to have some solution that reaches all the survivors rather than wasting time attempting all possibilities to find the optimal solution.
+\end{answer}
+\end{document}
