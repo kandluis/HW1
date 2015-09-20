@@ -40,6 +40,10 @@ import util
 import time
 import search
 import searchAgents
+import scipy
+from scipy.sparse import csr_matrix
+from scipy.sparse.csgraph import minimum_spanning_tree
+
 
 class GoWestAgent(Agent):
     "An agent that goes West until it can't."
@@ -475,8 +479,41 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
+
     "*** YOUR CODE HERE ***"
-    return 0
+    foodList = foodGrid.asList()
+    def manhattan_dist(xy1, xy2):
+        return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+
+
+    #first time herisitic is called calculate all manhattan distances between food
+    """if 'calculatedDists' not in problem.heuristicInfo:
+        problem.heuristicInfo['calculatedDists'] = True
+        for itemA in foodList:
+            for itemB in foodList:
+                problem.heuristicInfo[(itemA, itemB)] = manhattan_dist(itemA, itemB)
+    """
+    def make_graph():
+        foodList.append(position)
+        distMatrix = [[0 for i in range(len(foodList))] for j in range(len(foodList))]
+        for i in range(len(foodList)):
+            for j in range(i, len(foodList)):
+                distMatrix[i][j] = manhattan_dist(foodList[i], foodList[j])
+        print distMatrix
+        return csr_matrix(distMatrix)
+
+    mst = minimum_spanning_tree(make_graph()).toarray().astype(int)
+    print sum(map(sum, mst))
+    print mst
+    return sum(map(sum, mst))
+"""
+    distances = [manhattan_dist(position, food) for food in foodList]
+
+    if distances:
+        return foodGrid.count() + min(distances) - 1
+    else:
+        return 0
+"""
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
