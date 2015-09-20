@@ -497,14 +497,10 @@ def foodHeuristic(state, problem):
         distMatrix = [[0 for i in range(len(foodList))] for j in range(len(foodList))]
         for i in range(len(foodList)):
             for j in range(i, len(foodList)):
-                distMatrix[i][j] = euclideanDistance(foodList[i], foodList[j])
-        #print distMatrix
-        #print foodList
+                distMatrix[i][j] =euclideanDistance(foodList[i], foodList[j])
         return csr_matrix(distMatrix)
 
     mst = minimum_spanning_tree(make_graph()).toarray().astype(int)
-    #print sum(map(sum, mst))
-    #print mst
     return sum(map(sum, mst))
 """
     distances = [manhattan_dist(position, food) for food in foodList]
