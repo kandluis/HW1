@@ -358,15 +358,13 @@ def cornersHeuristic(state, problem):
     cost = 0 #start cost at 0
 
     #heristic is manhattan distance to closest non-visited corner
-    #then iterate that from said corner and repeat until all are visitied
-    def manhattan_dist(xy1, xy2):
-        return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+    #then iterate that from said corner and repeat until all are visited
 
     #initialize manhattan distances of corners to current pos
     nonVisitedCorners = {}
     for i in range(len(visitedCorners)):
         if not visitedCorners[i]:
-            nonVisitedCorners[corners[i]] = manhattan_dist(currentPosition, corners[i])
+            nonVisitedCorners[corners[i]] = util.manhattanDistance(currentPosition, corners[i])
 
 
     while nonVisitedCorners:
@@ -382,10 +380,9 @@ def cornersHeuristic(state, problem):
         new_pos = closestCorner
         del nonVisitedCorners[new_pos]
         #get manhattan distances from new pos
-        if nonVisitedCorners:
-            for corner in nonVisitedCorners:
-                nonVisitedCorners[corner] = manhattan_dist(new_pos, corner)
-    return cost 
+        for corner in nonVisitedCorners:
+            nonVisitedCorners[corner] = util.manhattanDistance(new_pos, corner)
+    return cost
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
