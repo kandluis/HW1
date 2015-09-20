@@ -485,26 +485,15 @@ def foodHeuristic(state, problem):
     "*** YOUR CODE HERE ***"
     foodList = foodGrid.asList()
 
-    #first time herisitic is called calculate all manhattan distances between food
-    """if 'calculatedDists' not in problem.heuristicInfo:
-        problem.heuristicInfo['calculatedDists'] = True
-        for itemA in foodList:
-            for itemB in foodList:
-                problem.heuristicInfo[(itemA, itemB)] = manhattan_dist(itemA, itemB)
-    """
     def make_graph():
         foodList.append(position)
         distMatrix = [[0 for i in range(len(foodList))] for j in range(len(foodList))]
         for i in range(len(foodList)):
             for j in range(i, len(foodList)):
                 distMatrix[i][j] = euclideanDistance(foodList[i], foodList[j])
-        #print distMatrix
-        #print foodList
         return csr_matrix(distMatrix)
 
     mst = minimum_spanning_tree(make_graph()).toarray().astype(int)
-    #print sum(map(sum, mst))
-    #print mst
     return sum(map(sum, mst))
 """
     distances = [manhattan_dist(position, food) for food in foodList]
