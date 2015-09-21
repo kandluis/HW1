@@ -475,7 +475,6 @@ def foodHeuristic(state, problem):
       problem.heuristicInfo['wallCount'] = problem.walls.count()
     Subsequent calls to this heuristic can access problem.heuristicInfo['wallCount']
     """
-
     def euclideanDistance(xy1,xy2):
         "The Euclidean distance"
         return ( (xy1[0] - xy2[0]) ** 2 + (xy1[1] - xy2[1]) ** 2 ) ** 0.5
@@ -485,6 +484,9 @@ def foodHeuristic(state, problem):
     "*** YOUR CODE HERE ***"
     foodList = foodGrid.asList()
 
+    #build an undirected graph with food and pacman as the nodes
+    #and add edge between every pair of nodes with their euclidean 
+    #distance
     def make_graph():
         foodList.append(position)
         distMatrix = [[0 for i in range(len(foodList))] for j in range(len(foodList))]
@@ -493,16 +495,9 @@ def foodHeuristic(state, problem):
                 distMatrix[i][j] = euclideanDistance(foodList[i], foodList[j])
         return csr_matrix(distMatrix)
 
+    #return the cost of the minimum spanning tree
     mst = minimum_spanning_tree(make_graph()).toarray().astype(int)
     return sum(map(sum, mst))
-"""
-    distances = [manhattan_dist(position, food) for food in foodList]
-
-    if distances:
-        return foodGrid.count() + min(distances) - 1
-    else:
-        return 0
-"""
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
