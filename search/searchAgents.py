@@ -312,8 +312,6 @@ class CornersProblem(search.SearchProblem):
         currentPosition, visitedCorners = state
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            # Add a successor state to the successor list if the action is legal
-            # Here's a code snippet for figuring out whether a new position hits a wall:
             x,y = currentPosition
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
@@ -359,12 +357,12 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     currentPosition, visitedCorners = state
-    cost = 0 #start cost at 0
+    cost = 0 # Start cost at 0
 
-    #heristic is manhattan distance to closest non-visited corner
-    #then iterate that from said corner and repeat until all are visited
+    # Heristic is manhattan distance to closest non-visited corner
+    # Then iterate that from said corner and repeat until all are visited
 
-    #initialize manhattan distances of corners to current pos
+    # Initialize manhattan distances of corners to current pos
     nonVisitedCorners = {}
     for i in range(len(visitedCorners)):
         if not visitedCorners[i]:
@@ -374,16 +372,16 @@ def cornersHeuristic(state, problem):
     while nonVisitedCorners:
         closestCorner = None
         distToClosestCorner = float('Inf')
-        #find closest unvisited corner to current pos
+        # Find closest unvisited corner to current pos
         for corner in nonVisitedCorners:
             if nonVisitedCorners[corner] < distToClosestCorner:
                 distToClosestCorner = nonVisitedCorners[corner]
                 closestCorner = corner
         cost += distToClosestCorner
-        #set that corner as the new pos
+        # Set that corner as the new pos
         new_pos = closestCorner
         del nonVisitedCorners[new_pos]
-        #get manhattan distances from new pos
+        # Get manhattan distances from new pos
         for corner in nonVisitedCorners:
             nonVisitedCorners[corner] = util.manhattanDistance(new_pos, corner)
     return cost
@@ -475,41 +473,29 @@ def foodHeuristic(state, problem):
       problem.heuristicInfo['wallCount'] = problem.walls.count()
     Subsequent calls to this heuristic can access problem.heuristicInfo['wallCount']
     """
-
     def euclideanDistance(xy1,xy2):
-        "The Euclidean distance"
+        """
+        The Euclidean distance between two points xy1 and xy2 in R^2
+        """
         return ( (xy1[0] - xy2[0]) ** 2 + (xy1[1] - xy2[1]) ** 2 ) ** 0.5
 
-    position, foodGrid = state
-
-    "*** YOUR CODE HERE ***"
-    foodList = foodGrid.asList()
-
-    #first time herisitic is called calculate all manhattan distances between food
-    """if 'calculatedDists' not in problem.heuristicInfo:
-        problem.heuristicInfo['calculatedDists'] = True
-        for itemA in foodList:
-            for itemB in foodList:
-                problem.heuristicInfo[(itemA, itemB)] = manhattan_dist(itemA, itemB)
-    """
-    def make_graph():
-        foodList.append(position)
-        distMatrix = [[0 for i in range(len(foodList))] for j in range(len(foodList))]
-        for i in range(len(foodList)):
-            for j in range(i, len(foodList)):
-                distMatrix[i][j] =euclideanDistance(foodList[i], foodList[j])
+    def make_graph(posList):
+        """
+        Build an undirected graph over the set of coordinates contained
+        in posList.
+        """
+        distMatrix = [[0 for i in range(len(posList))] for j in range(len(posList))]
+        for i in range(len(posList)):
+            for j in range(i, len(posList)):
+                distMatrix[i][j] = euclideanDistance(posList[i], posList[j])
         return csr_matrix(distMatrix)
 
-    mst = minimum_spanning_tree(make_graph()).toarray().astype(int)
-    return sum(map(sum, mst))
-"""
-    distances = [manhattan_dist(position, food) for food in foodList]
+    position, foodGrid = state
+    positions = foodGrid.asList() + [position]
 
-    if distances:
-        return foodGrid.count() + min(distances) - 1
-    else:
-        return 0
-"""
+    # Return the cost of the minimum spanning tree
+    mst = minimum_spanning_tree(make_graph(positions)).toarray().astype(float)
+    return mst.sum()
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
