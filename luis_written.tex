@@ -46,14 +46,18 @@
 Given that this is a DFS search, the exploration order is as expected. It has a single dark red path that goes as far as possible (until a dead end or the goal) an then branches from there, exploring ``deep'' states first. There are many paths/states that are left unexplored sometimes, since the algorithm ends as soon as a path to the food item has been found.
 
 From the above, it's clear that Pac-Man does not go to all the explored squares. There are times when a path is explored but it proves a dead-end (or is a part of a path to the goal that could be ignored), and therefore Pac-Man does not take that path on his way to the food.
+
+As for BFS, the exploration order is also expected. It's clear from the game diagram that the states are explored in an ``expanding wave'' fashion from the starting position of pacman. It is cleared from this expansion that not all explored states are visited by Pac-Man. However, it is also clear from BFS that it finds the optimal path because it looks in ``every'' direction at each step.
+
+Finally, for UCS, the image is exactly the same as that of BFS for the first cases. This is expected, because BFS is essentially UCS with cost function $1$. For the stayWest and stayEast agents, the explored states are also as expected. Those to the West/East tend to be explored more.
 \end{answer}
 
 \begin{answer}
-In the openMaze, $A^*$ finds reaches the food item using a path of length $54$ by expanding a total of $535$ nodes. On the other hand, UCS also finds a path of length $54$ (in this case, it happens to be the same path, but in general, this need not be the case, just as long as both paths are the optimal length), but it must expand $682$ total nodes, a $\sim 27\%$.
+In the openMaze, $A^*$ finds reaches the food item using a path of length $54$ by expanding a total of $535$ nodes. On the other hand, UCS also finds a path of length $54$ (in this case, it happens to be the same path, but in general, this need not be the case, just as long as both paths are the optimal length), but it must expand $682$ total nodes, a $\sim 27\%$ increase.
 
-For further study, I also ran openMaze with BFS and DFS. Interestingly enough, using BFS gave a different optimal path, but expanded the same number of nodes as UCS. This makes sense, however, if we consider that UCS is using the unit function for step costs, and is therefore essentially just BFS. The reason for the different path is likely just due to the tie-breaking that occurs inside a Queue in BGS as compared to a PriorityQueue in UCS. As for DFS, it finds an extremely subobtimal path (essentially takes Pac-Man over the entire board) of length $298$. Interestingly, however, it only expands $576$ nodes, which is less than BFS/UCS (and still more than $A^*$).
+For further study, I also ran openMaze with BFS and DFS. Interestingly enough, using BFS gave a different optimal path, but expanded the same number of nodes as UCS. This makes sense, however, if we consider that UCS is using the unit function for step costs, and is therefore essentially just BFS. The reason for the different path is likely just due to the tie-breaking that occurs inside a Queue in BFS as compared to a PriorityQueue in UCS. As for DFS, it finds an extremely subobtimal path (essentially takes Pac-Man over the entire board) of length $298$. Interestingly, however, it only expands $576$ nodes, which is less than BFS/UCS (and still more than $A^*$).
 
-In conclusion, $A^*$ is clearly the best in this situation, finding the optimal solution with the least number of expansions.
+In conclusion, $A^*$ is clearly the best in this situation, finding the optimal solution with the least number of expansions. However, I would add the caveat that for some small test cases, depending on the heuristic being used, $A^*$ could take a longer time than UCS (it is a trade off between the number of saved expansions vs the time-complexity added for calculating the heuristic at each state). In general, as long as the heuristic is computable in polynomial time, as test cases becomes larger, $A^*$ should be optimal.
 \end{answer}
 
 \begin{answer}
